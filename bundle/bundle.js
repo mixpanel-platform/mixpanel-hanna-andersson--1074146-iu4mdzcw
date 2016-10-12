@@ -163,9 +163,19 @@
 		}, {
 			key: 'render',
 			value: function render() {
+				var dataTest = "zzzz";
+				if (this.state.topAttributions.length > 0) {
+					dataTest = this.state.topAttributions[0].value.count;
+				}
+	
 				return _react2.default.createElement(
 					'div',
 					null,
+					_react2.default.createElement(
+						'div',
+						null,
+						dataTest
+					),
 					_react2.default.createElement(
 						'div',
 						null,
