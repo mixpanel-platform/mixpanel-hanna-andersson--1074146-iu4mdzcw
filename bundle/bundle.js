@@ -181,7 +181,7 @@
 						null,
 						this.state.test
 					),
-					_react2.default.createElement(_multiTouchAttribution2.default, null)
+					_react2.default.createElement(_multiTouchAttribution2.default, { attributionList: this.state.topAttributions })
 				);
 			}
 		}]);
@@ -22109,6 +22109,8 @@
 	
 		|______COLUMN 1______|______COLUMN 2______|______COLUMN 3______|
 		|   (Channel Path)   | (# of Conversions) | ($ from Conversion)|
+	
+	
 	*/
 	
 	var MultiTouchAttribution = function (_React$Component) {
@@ -22123,6 +22125,11 @@
 		_createClass(MultiTouchAttribution, [{
 			key: 'render',
 			value: function render() {
+				var test = "test";
+				if (this.props.attributionList.length > 0) {
+					test = this.props.attributionList[0].value.count;
+				}
+	
 				return _react2.default.createElement(
 					'div',
 					null,
@@ -22152,6 +22159,11 @@
 								)
 							)
 						)
+					),
+					_react2.default.createElement(
+						'div',
+						null,
+						test
 					)
 				);
 			}
