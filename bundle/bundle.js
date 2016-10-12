@@ -83,7 +83,8 @@
 			var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 	
 			_this.state = {
-				topAttributions: []
+				topAttributions: [],
+				test: 'no'
 			};
 			return _this;
 		}
@@ -151,7 +152,7 @@
 						}
 					}
 	
-					app.setState({ topAttributions: topAttributions });
+					app.setState({ topAttributions: topAttributions, test: 'Yes' });
 				});
 			}
 		}, {
@@ -165,6 +166,11 @@
 				return _react2.default.createElement(
 					'div',
 					null,
+					_react2.default.createElement(
+						'div',
+						null,
+						this.state.test
+					),
 					_react2.default.createElement(_multiTouchAttribution2.default, null)
 				);
 			}
