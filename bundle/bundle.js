@@ -22178,6 +22178,7 @@
 						_react2.default.createElement(
 							'td',
 							{ style: tdNumberStyle },
+							'$',
 							revenue
 						)
 					));
