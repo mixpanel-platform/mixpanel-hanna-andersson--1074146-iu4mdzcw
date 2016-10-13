@@ -22164,7 +22164,7 @@
 	
 					tableRows.push(_react2.default.createElement(
 						'tr',
-						{ style: trStyle },
+						{ style: trStyle, className: 'table-row' },
 						_react2.default.createElement(
 							'td',
 							{ style: tdStyle },
