@@ -77,6 +77,7 @@
 	var App = function (_React$Component) {
 		_inherits(App, _React$Component);
 	
+		// Initialize App with one state property, an array of top attribution flows
 		function App(props) {
 			_classCallCheck(this, App);
 	
@@ -166,7 +167,6 @@
 		}, {
 			key: 'render',
 			value: function render() {
-	
 				var bodyStyle = {
 					fontFamily: 'Source Sans Pro, Helvetica'
 				};
@@ -22136,7 +22136,7 @@
 			value: function render() {
 				/////    CSS    /////
 				var trStyle = {
-					borderBottom: '#d6d6d6 2px solid'
+					borderBottom: '#e0e0e0 2px solid'
 				};
 	
 				var tdStyle = {
@@ -22153,8 +22153,8 @@
 					textAlign: 'center'
 				};
 	
+				// Iterate over attribution flows list, create table row elements
 				var attributionList = this.props.attributionList;
-	
 				var tableRows = [];
 				for (var i = 0; i < attributionList.length; i++) {
 	
@@ -22196,7 +22196,7 @@
 							_react2.default.createElement(
 								'th',
 								{ style: thStyle },
-								'Channel Path'
+								'Attribution Channel Path'
 							),
 							_react2.default.createElement(
 								'th',
@@ -22206,7 +22206,7 @@
 							_react2.default.createElement(
 								'th',
 								{ style: thStyle },
-								'Revenue'
+								'Total Revenue'
 							)
 						),
 						tableRows
