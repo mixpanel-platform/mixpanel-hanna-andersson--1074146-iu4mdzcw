@@ -71,7 +71,7 @@
 	
 	// Multi-Touch Attribution Display for Hanna Andersson
 	
-	// Set Credentials
+	// Set Credentialss
 	MP.api.setCredentials('9b4f82b0d853dc32417d17f4f6847464');
 	
 	var App = function (_React$Component) {
@@ -83,8 +83,7 @@
 			var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 	
 			_this.state = {
-				topAttributions: [],
-				test: 'no'
+				topAttributions: []
 			};
 			return _this;
 		}
@@ -141,6 +140,7 @@
 						return b.value.revenue - a.value.revenue;
 					});
 	
+					// Insert top journeys into array, set array to as part of app state
 					topAttributions = [];
 					for (var i = 0; i < results.length; i++) {
 						var customerFlow = results[i].key;
@@ -152,9 +152,12 @@
 						}
 					}
 	
-					app.setState({ topAttributions: topAttributions, test: 'Yes' });
+					app.setState({ topAttributions: topAttributions });
 				});
 			}
+	
+			// When component loads, query for specified number of top attributions
+	
 		}, {
 			key: 'componentDidMount',
 			value: function componentDidMount() {
@@ -163,24 +166,14 @@
 		}, {
 			key: 'render',
 			value: function render() {
-				var dataTest = "zzzz";
-				if (this.state.topAttributions.length > 0) {
-					dataTest = this.state.topAttributions[0].value.count;
-				}
+	
+				var bodyStyle = {
+					fontFamily: 'Source Sans Pro, Helvetica'
+				};
 	
 				return _react2.default.createElement(
 					'div',
-					null,
-					_react2.default.createElement(
-						'div',
-						null,
-						dataTest
-					),
-					_react2.default.createElement(
-						'div',
-						null,
-						this.state.test
-					),
+					{ style: bodyStyle },
 					_react2.default.createElement(_multiTouchAttribution2.default, { attributionList: this.state.topAttributions })
 				);
 			}
@@ -22109,8 +22102,24 @@
 	
 		|______COLUMN 1______|______COLUMN 2______|______COLUMN 3______|
 		|   (Channel Path)   | (# of Conversions) | ($ from Conversion)|
+	*/
 	
-	
+	/* PROPS:
+		'attributionList':
+			Type: Array
+			Array of attribution events, each are objects of the form
+				{
+					key:[
+							"Some Attribution Source A",
+							"Some Attribution Source B",
+							...
+							...
+						],
+					value: {
+							count: [Number],
+							revenue: [Number]
+					} 
+				}
 	*/
 	
 	var MultiTouchAttribution = function (_React$Component) {
@@ -22125,9 +22134,53 @@
 		_createClass(MultiTouchAttribution, [{
 			key: 'render',
 			value: function render() {
-				var test = "test";
-				if (this.props.attributionList.length > 0) {
-					test = this.props.attributionList[0].value.count;
+				/////    CSS    /////
+				var trStyle = {
+					borderBottom: '#d6d6d6 2px solid'
+				};
+	
+				var tdStyle = {
+					padding: '18px'
+				};
+	
+				var thStyle = {
+					padding: '8px',
+					minWidth: '200px'
+				};
+	
+				var tdNumberStyle = {
+					padding: '18px',
+					textAlign: 'center'
+				};
+	
+				var attributionList = this.props.attributionList;
+	
+				var tableRows = [];
+				for (var i = 0; i < attributionList.length; i++) {
+	
+					var sequence = attributionList[i].key;
+					var count = attributionList[i].value.count.toLocaleString();
+					var revenue = attributionList[i].value.revenue.toLocaleString();
+	
+					tableRows.push(_react2.default.createElement(
+						'tr',
+						{ style: trStyle },
+						_react2.default.createElement(
+							'td',
+							{ style: tdStyle },
+							_react2.default.createElement(AttributionSequence, { sequence: sequence })
+						),
+						_react2.default.createElement(
+							'td',
+							{ style: tdNumberStyle },
+							count
+						),
+						_react2.default.createElement(
+							'td',
+							{ style: tdNumberStyle },
+							revenue
+						)
+					));
 				}
 	
 				return _react2.default.createElement(
@@ -22136,34 +22189,27 @@
 					_react2.default.createElement(
 						'table',
 						null,
+						_react2.default.createElement('colgroup', { span: '3' }),
 						_react2.default.createElement(
-							'tbody',
-							null,
+							'tr',
+							{ style: trStyle },
 							_react2.default.createElement(
-								'tr',
-								null,
-								_react2.default.createElement(
-									'th',
-									null,
-									'Channel Path'
-								),
-								_react2.default.createElement(
-									'th',
-									null,
-									'Number of Conversions'
-								),
-								_react2.default.createElement(
-									'th',
-									null,
-									'Revenue'
-								)
+								'th',
+								{ style: thStyle },
+								'Channel Path'
+							),
+							_react2.default.createElement(
+								'th',
+								{ style: thStyle },
+								'Number of Conversions'
+							),
+							_react2.default.createElement(
+								'th',
+								{ style: thStyle },
+								'Revenue'
 							)
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						null,
-						test
+						),
+						tableRows
 					)
 				);
 			}
@@ -22173,6 +22219,17 @@
 	}(_react2.default.Component);
 	
 	exports.default = MultiTouchAttribution;
+	
+	/*
+		-- AttributionSequence --
+	
+		Color-coded Attribution sequences
+	*/
+	/* PROPS:
+		'sequence':
+			Type: Array of Strings representing a customer journey
+			across multiple attribution sources
+	*/
 	
 	var AttributionSequence = function (_React$Component2) {
 		_inherits(AttributionSequence, _React$Component2);
@@ -22186,7 +22243,71 @@
 		_createClass(AttributionSequence, [{
 			key: 'render',
 			value: function render() {
-				return _react2.default.createElement('div', null);
+				/////     CSS     /////
+				var styleMapping = {
+					"Facebook": {
+						backgroundColor: '#495d88'
+					},
+					"Twitter": {
+						backgroundColor: '#55baec'
+					},
+					"Email": {
+						backgroundColor: '#82bf91'
+					},
+					"Google AdWords": {
+						backgroundColor: '#c94547'
+					},
+					"Organic Search": {
+						backgroundColor: '#d6c25c'
+					},
+					"Referral": {
+						backgroundColor: '#b78cd8'
+					}
+				};
+	
+				// Style applicable to ALL attribution elements
+				var generalStyle = {
+					padding: '4px 7px 4px 7px',
+					borderRadius: '3px',
+					color: 'white'
+				};
+	
+				// Style '>' arrows that direct customer Journey
+				var arrowStyle = {
+					padding: '0px 6px 0px 6px',
+					color: '#bdbdbd',
+					fontWeight: 'bold'
+				};
+	
+				var sequenceChain = [];
+				for (var i = 0; i < this.props.sequence.length; i++) {
+					var attributionName = this.props.sequence[i];
+					var attributionStyle = styleMapping[attributionName];
+	
+					// Merge attribution-specific style with general attribution style
+					var mergedStyle = Object.assign({}, generalStyle, attributionStyle);
+	
+					sequenceChain.push(_react2.default.createElement(
+						'span',
+						{ style: mergedStyle },
+						attributionName
+					));
+	
+					// Append '>' to link items together
+					if (i < this.props.sequence.length - 1) {
+						sequenceChain.push(_react2.default.createElement(
+							'span',
+							{ style: arrowStyle },
+							'>'
+						));
+					}
+				}
+	
+				return _react2.default.createElement(
+					'div',
+					null,
+					sequenceChain
+				);
 			}
 		}]);
 	
