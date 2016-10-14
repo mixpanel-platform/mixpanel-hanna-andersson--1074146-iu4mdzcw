@@ -1,6 +1,6 @@
 // Multi-Touch Attribution Display for Hanna Andersson
 
-// Set Credentialss
+// Set Credentials
 MP.api.setCredentials('9b4f82b0d853dc32417d17f4f6847464');
 
 import React from 'react';
@@ -98,7 +98,7 @@ class App extends React.Component {
 
 		return(
 			<div style={bodyStyle}>
-				<MultiTouchAttribution attributionList={this.state.topAttributions} />
+				<MultiTouchAttribution attributionList={this.state.topAttributions} reportNumber={1074146}/>
 			</div>
 		);
 	}

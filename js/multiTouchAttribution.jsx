@@ -20,7 +20,7 @@ import {render} from 'react-dom';
 				key:[
 						"Some Attribution Source A",
 						"Some Attribution Source B",
-						...
+						"Some Attribution Source C",
 						...
 					],
 				value: {
@@ -28,11 +28,15 @@ import {render} from 'react-dom';
 						revenue: [Number]
 				} 
 			}
+
+	'reportNumber':
+		Type: Number
+		Mixpanel report number, used to create URLs to Explore feature in MP report
 */
 
 class MultiTouchAttribution extends React.Component {
 
-	// Insert CSS transitions for hovering on table rows
+	// Insert CSS transitions for hovering on table rows or attribution links
 	componentDidMount() {
 		var animationStyle = document.getElementById('animationCSS');
 
@@ -43,6 +47,12 @@ class MultiTouchAttribution extends React.Component {
 											\
 			.table-row:hover {				\
 				background-color: #f5f5f5;	\
+			}								\
+			a {								\
+				text-decoration: none		\
+			}								\
+			a:hover {						\
+				text-decoration: underline	\
 			}								\
 		";
 	}
@@ -58,7 +68,7 @@ class MultiTouchAttribution extends React.Component {
 		}
 
 		var thStyle = {
-			padding: '8px',
+			padding: '14px 8px 14px 8px',
 			minWidth: '200px'
 		}
 
@@ -78,7 +88,7 @@ class MultiTouchAttribution extends React.Component {
 
 			tableRows.push(
 				<tr style={trStyle} className="table-row">
-					<td style={tdStyle}><AttributionSequence sequence={sequence} /></td>
+					<td style={tdStyle}><AttributionSequence sequence={sequence} reportNumber={this.props.reportNumber}/></td>
 					<td style={tdNumberStyle}>{count}</td>
 					<td style={tdNumberStyle}>${revenue}</td>
 				</tr>
@@ -111,11 +121,38 @@ export default MultiTouchAttribution;
 */
 /* PROPS:
 	'sequence':
-		Type: Array of Strings representing a customer journey
-		across multiple attribution sources
+		Type: Array of Strings
+		Represents a customer journey across multiple attribution sources
+
+	'reportNumber':
+		Type: Number
+		Report number on Mixpanel
 */
 
 class AttributionSequence extends React.Component {
+
+	// Input the attribution names into the Explore URL to generate and open an Explore report
+	generateExploreURL(sequence) {
+		// Set up URL strings to load Explore when a user clicks an attribution
+		var exploreURL = "https://mixpanel.com/report/" + this.props.reportNumber
+		+ "/explore/#list/filter:(conjunction:and,filters:!((dropdown_tab_index:0,filter:(operand:'',operator:within,option:was,window_size:'90'),"
+		+ "property:(name:'Complete%20Purchase',no_second_icon:!t,source:properties,type:behavioral),"
+		+ "selected_property_type:behavioral,sub_event_property_filter_list_params:"
+		+ "(conjunction:and,filters:!(";
+
+		var exploreSuffix = ")),type:behavioral))),sort_order:descending,sort_property:'$last_seen',sort_property_type:datetime";
+
+		//+ "(filter:(operand:Twitter,operator:in),property:UTM_Sources,selected_property_type:list,type:list),"
+		//+ "(filter:(operand:Email,operator:in),property:UTM_Sources,selected_property_type:list,type:list)"
+
+		// Append filters for each attribution property
+		for (var i = 0; i < sequence.length; i++) {
+			exploreURL += "(filter:(operand:" + sequence[i] + ",operator:in),property:UTM_Sources,selected_property_type:list,type:list)";
+			if (i < sequence.length - 1) { exploreURL += "," };
+		}
+		exploreURL += exploreSuffix;
+		return exploreURL;
+	}
 
 	render() {
 		/////     CSS     /////
@@ -127,13 +164,13 @@ class AttributionSequence extends React.Component {
 				backgroundColor: '#55baec',
 			},
 			"Email": {
-				backgroundColor: '#82bf91'
+				backgroundColor: '#61ae74'
 			},
 			"Google AdWords": {
-				backgroundColor: '#c94547',
+				backgroundColor: '#b95556',
 			},
 			"Organic Search": {
-				backgroundColor: '#d6c25c'
+				backgroundColor: '#ab962b'
 			},
 			"Referral": {
 				backgroundColor: '#b78cd8'
@@ -142,7 +179,7 @@ class AttributionSequence extends React.Component {
 
 		// Style applicable to ALL attribution elements
 		var generalStyle = {
-			padding: '4px 7px 4px 7px',
+			padding: '5px 7px 5px 7px',
 			borderRadius: '3px',
 			color: 'white'
 		}
@@ -154,6 +191,8 @@ class AttributionSequence extends React.Component {
 			fontWeight: 'bold'
 		}
 
+		var exploreURL = this.generateExploreURL(this.props.sequence);
+
 		var sequenceChain = [];
 		for (var i = 0; i < this.props.sequence.length; i++) {
 			var attributionName = this.props.sequence[i];
@@ -162,10 +201,11 @@ class AttributionSequence extends React.Component {
 			// Merge attribution-specific style with general attribution style
 			var mergedStyle = Object.assign({}, generalStyle, attributionStyle);
 
+			// Push attribution element into the array of other attributions in its flow
 			sequenceChain.push(
-				<span style={mergedStyle}>
+				<a href={exploreURL} style={mergedStyle} target="new">
 					{attributionName}
-				</span>
+				</a>
 			);
 
 			// Append '>' to link items together
