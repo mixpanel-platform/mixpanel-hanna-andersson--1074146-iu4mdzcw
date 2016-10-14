@@ -22164,7 +22164,7 @@
 			value: function render() {
 				/////    CSS    /////
 				var trStyle = {
-					borderBottom: '#e0e0e0 2px solid'
+					borderBottom: '#e0e0e0 1px solid'
 				};
 	
 				var tdStyle = {
@@ -22261,7 +22261,7 @@
 	
 		'reportNumber':
 			Type: Number
-			Report number on Mixpanel
+			Report number on Mixpanel, used to generate Explore URL
 	*/
 	
 	var AttributionSequence = function (_React$Component2) {
@@ -22283,9 +22283,6 @@
 				var exploreURL = "https://mixpanel.com/report/" + this.props.reportNumber + "/explore/#list/filter:(conjunction:and,filters:!((dropdown_tab_index:0,filter:(operand:'',operator:within,option:was,window_size:'90')," + "property:(name:'Complete%20Purchase',no_second_icon:!t,source:properties,type:behavioral)," + "selected_property_type:behavioral,sub_event_property_filter_list_params:" + "(conjunction:and,filters:!(";
 	
 				var exploreSuffix = ")),type:behavioral))),sort_order:descending,sort_property:'$last_seen',sort_property_type:datetime";
-	
-				//+ "(filter:(operand:Twitter,operator:in),property:UTM_Sources,selected_property_type:list,type:list),"
-				//+ "(filter:(operand:Email,operator:in),property:UTM_Sources,selected_property_type:list,type:list)"
 	
 				// Append filters for each attribution property
 				for (var i = 0; i < sequence.length; i++) {
