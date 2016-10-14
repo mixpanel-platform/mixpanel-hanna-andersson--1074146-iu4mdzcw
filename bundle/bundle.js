@@ -71,7 +71,7 @@
 	
 	// Multi-Touch Attribution Display for Hanna Andersson
 	
-	// Set Credentialss
+	// Set Credentials
 	MP.api.setCredentials('9b4f82b0d853dc32417d17f4f6847464');
 	
 	var App = function (_React$Component) {
