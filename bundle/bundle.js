@@ -174,7 +174,7 @@
 				return _react2.default.createElement(
 					'div',
 					{ style: bodyStyle },
-					_react2.default.createElement(_multiTouchAttribution2.default, { attributionList: this.state.topAttributions })
+					_react2.default.createElement(_multiTouchAttribution2.default, { attributionList: this.state.topAttributions, reportNumber: 1074146 })
 				);
 			}
 		}]);
@@ -22112,7 +22112,7 @@
 					key:[
 							"Some Attribution Source A",
 							"Some Attribution Source B",
-							...
+							"Some Attribution Source C",
 							...
 						],
 					value: {
@@ -22120,6 +22120,10 @@
 							revenue: [Number]
 					} 
 				}
+	
+		'reportNumber':
+			Type: Number
+			Mixpanel report number, used to create URLs to Explore feature in MP report
 	*/
 	
 	var MultiTouchAttribution = function (_React$Component) {
@@ -22135,7 +22139,7 @@
 			key: 'componentDidMount',
 	
 	
-			// Insert CSS transitions for hovering on table rows
+			// Insert CSS transitions for hovering on table rows or attribution links
 			value: function componentDidMount() {
 				var animationStyle = document.getElementById('animationCSS');
 	
@@ -22146,6 +22150,12 @@
 												\
 				.table-row:hover {				\
 					background-color: #f5f5f5;	\
+				}								\
+				a {								\
+					text-decoration: none		\
+				}								\
+				a:hover {						\
+					text-decoration: underline	\
 				}								\
 			";
 			}
@@ -22186,7 +22196,7 @@
 						_react2.default.createElement(
 							'td',
 							{ style: tdStyle },
-							_react2.default.createElement(AttributionSequence, { sequence: sequence })
+							_react2.default.createElement(AttributionSequence, { sequence: sequence, reportNumber: this.props.reportNumber })
 						),
 						_react2.default.createElement(
 							'td',
@@ -22246,8 +22256,12 @@
 	*/
 	/* PROPS:
 		'sequence':
-			Type: Array of Strings representing a customer journey
-			across multiple attribution sources
+			Type: Array of Strings
+			Represents a customer journey across multiple attribution sources
+	
+		'reportNumber':
+			Type: Number
+			Report number on Mixpanel
 	*/
 	
 	var AttributionSequence = function (_React$Component2) {
@@ -22260,6 +22274,30 @@
 		}
 	
 		_createClass(AttributionSequence, [{
+			key: 'generateExploreURL',
+	
+	
+			// Input the attribution names into the Explore URL to generate and open an Explore report
+			value: function generateExploreURL(sequence) {
+				// Set up URL strings to load Explore when a user clicks an attribution
+				var exploreURL = "https://mixpanel.com/report/" + this.props.reportNumber + "/explore/#list/filter:(conjunction:and,filters:!((dropdown_tab_index:0,filter:(operand:'',operator:within,option:was,window_size:'90')," + "property:(name:'Complete%20Purchase',no_second_icon:!t,source:properties,type:behavioral)," + "selected_property_type:behavioral,sub_event_property_filter_list_params:" + "(conjunction:and,filters:!(";
+	
+				var exploreSuffix = ")),type:behavioral))),sort_order:descending,sort_property:'$last_seen',sort_property_type:datetime";
+	
+				//+ "(filter:(operand:Twitter,operator:in),property:UTM_Sources,selected_property_type:list,type:list),"
+				//+ "(filter:(operand:Email,operator:in),property:UTM_Sources,selected_property_type:list,type:list)"
+	
+				// Append filters for each attribution property
+				for (var i = 0; i < sequence.length; i++) {
+					exploreURL += "(filter:(operand:" + sequence[i] + ",operator:in),property:UTM_Sources,selected_property_type:list,type:list)";
+					if (i < sequence.length - 1) {
+						exploreURL += ",";
+					};
+				}
+				exploreURL += exploreSuffix;
+				return exploreURL;
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				/////     CSS     /////
@@ -22298,6 +22336,8 @@
 					fontWeight: 'bold'
 				};
 	
+				var exploreURL = this.generateExploreURL(this.props.sequence);
+	
 				var sequenceChain = [];
 				for (var i = 0; i < this.props.sequence.length; i++) {
 					var attributionName = this.props.sequence[i];
@@ -22306,9 +22346,10 @@
 					// Merge attribution-specific style with general attribution style
 					var mergedStyle = Object.assign({}, generalStyle, attributionStyle);
 	
+					// Push attribution element into the array of other attributions in its flow
 					sequenceChain.push(_react2.default.createElement(
-						'span',
-						{ style: mergedStyle },
+						'a',
+						{ href: exploreURL, style: mergedStyle, target: 'new' },
 						attributionName
 					));
 	
