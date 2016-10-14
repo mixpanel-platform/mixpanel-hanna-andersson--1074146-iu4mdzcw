@@ -22162,7 +22162,7 @@
 				};
 	
 				var thStyle = {
-					padding: '8px',
+					padding: '14px 8px 14px 8px',
 					minWidth: '200px'
 				};
 	
