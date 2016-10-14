@@ -32,6 +32,21 @@ import {render} from 'react-dom';
 
 class MultiTouchAttribution extends React.Component {
 
+	// Insert CSS transitions for hovering on table rows
+	componentDidMount() {
+		var animationStyle = document.getElementById('animationCSS');
+
+		animationCSS.innerHTML = "			\
+			.table-row {					\
+				transition: all 0.15s;		\
+			}								\
+											\
+			.table-row:hover {				\
+				background-color: #f5f5f5;	\
+			}								\
+		";
+	}
+
 	render() {
 		/////    CSS    /////
 		var trStyle = {
@@ -52,7 +67,6 @@ class MultiTouchAttribution extends React.Component {
 			textAlign: 'center'
 		}
 
-
 		// Iterate over attribution flows list, create table row elements
 		var attributionList = this.props.attributionList;
 		var tableRows = [];
@@ -66,7 +80,7 @@ class MultiTouchAttribution extends React.Component {
 				<tr style={trStyle} className="table-row">
 					<td style={tdStyle}><AttributionSequence sequence={sequence} /></td>
 					<td style={tdNumberStyle}>{count}</td>
-					<td style={tdNumberStyle}>{revenue}</td>
+					<td style={tdNumberStyle}>${revenue}</td>
 				</tr>
 			);
 		}
@@ -139,7 +153,6 @@ class AttributionSequence extends React.Component {
 			color: '#bdbdbd',
 			fontWeight: 'bold'
 		}
-
 
 		var sequenceChain = [];
 		for (var i = 0; i < this.props.sequence.length; i++) {
