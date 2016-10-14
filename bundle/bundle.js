@@ -22271,13 +22271,13 @@
 						backgroundColor: '#55baec'
 					},
 					"Email": {
-						backgroundColor: '#82bf91'
+						backgroundColor: '#61ae74'
 					},
 					"Google AdWords": {
-						backgroundColor: '#c94547'
+						backgroundColor: '#b95556'
 					},
 					"Organic Search": {
-						backgroundColor: '#d6c25c'
+						backgroundColor: '#ab962b'
 					},
 					"Referral": {
 						backgroundColor: '#b78cd8'
@@ -22286,7 +22286,7 @@
 	
 				// Style applicable to ALL attribution elements
 				var generalStyle = {
-					padding: '4px 7px 4px 7px',
+					padding: '5px 7px 5px 7px',
 					borderRadius: '3px',
 					color: 'white'
 				};
