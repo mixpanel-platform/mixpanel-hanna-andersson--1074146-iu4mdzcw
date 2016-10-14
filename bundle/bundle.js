@@ -22132,6 +22132,24 @@
 		}
 	
 		_createClass(MultiTouchAttribution, [{
+			key: 'componentDidMount',
+	
+	
+			// Insert CSS transitions for hovering on table rows
+			value: function componentDidMount() {
+				var animationStyle = document.getElementById('animationCSS');
+	
+				animationCSS.innerHTML = "			\
+				.table-row {					\
+					transition: all 0.15s;		\
+				}								\
+												\
+				.table-row:hover {				\
+					background-color: #f5f5f5;	\
+				}								\
+			";
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				/////    CSS    /////
