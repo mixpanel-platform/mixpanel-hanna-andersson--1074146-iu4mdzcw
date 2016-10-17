@@ -37,6 +37,7 @@ import {render} from 'react-dom';
 class MultiTouchAttribution extends React.Component {
 
 	// Insert CSS transitions for hovering on table rows or attribution links
+	// Requires a <style> element with id 'animationCSS' to insert CSS rules
 	componentDidMount() {
 		var animationStyle = document.getElementById('animationCSS');
 
@@ -133,21 +134,24 @@ class AttributionSequence extends React.Component {
 
 	// Input the attribution names into the Explore URL to generate and open an Explore report
 	generateExploreURL(sequence) {
-		// Set up URL strings to load Explore when a user clicks an attribution
+		// Set up URL strings to load Explore when a user clicks an attribution		
 		var exploreURL = "https://mixpanel.com/report/" + this.props.reportNumber
-		+ "/explore/#list/filter:(conjunction:and,filters:!((dropdown_tab_index:0,filter:(operand:'',operator:within,option:was,window_size:'90'),"
-		+ "property:(name:'Complete%20Purchase',no_second_icon:!t,source:properties,type:behavioral),"
-		+ "selected_property_type:behavioral,sub_event_property_filter_list_params:"
-		+ "(conjunction:and,filters:!(";
+		+ "/explore/#list/filter:(conjunction:and,filters:!((dropdown_tab_index:1,filter:"
+		+ "(operand:'',operator:within,option:was,window_size:'90'),property:(name:'Complete%20Purchase',no_second_icon:!t,source:"
+		+ "properties,type:behavioral),selected_property_type:behavioral,sub_event_property_filter_list_params:(conjunction:and,filters:!((filter:"
+		+ "(operand:!('%5B";
 
-		var exploreSuffix = ")),type:behavioral))),sort_order:descending,sort_property:'$last_seen',sort_property_type:datetime";
+		var exploreSuffix = "%5D'),operator:%3D%3D),property:UTM_Sources,selected_property_type:list,type:string))),"
+		+ "type:behavioral))),sort_order:descending,sort_property:'$last_seen',sort_property_type:datetime";
 
-		// Append filters for each attribution property
+		// Append filters for each attribution property		
 		for (var i = 0; i < sequence.length; i++) {
-			exploreURL += "(filter:(operand:" + sequence[i] + ",operator:in),property:UTM_Sources,selected_property_type:list,type:list)";
+			exploreURL += "%22" + sequence[i] + "%22";
 			if (i < sequence.length - 1) { exploreURL += "," };
 		}
+
 		exploreURL += exploreSuffix;
+
 		return exploreURL;
 	}
 
